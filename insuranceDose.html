@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="bootstrap5/css/bootstrap.css">
+    
+    <!-- JQuery -->
+   <script src="js/jquery-3.6.0.min.js"></script>
+
+   <!-- js file -->
+   <script src="js/insudose.js"></script>
+   
+	<style>
+		body {
+			background-color: #3c7480;
+			
+		}
+		
+		.largeFont{
+			font-size: large;
+		}
+
+		.frame {
+			border-radius: 20px;
+			margin: 10px;
+			
+			height: 75%;
+			background-color: #fff;
+			padding: 30px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+		#search-results {
+			max-height: 300px;
+			overflow-y: auto;
+		}
+		
+	</style>
+
+</head>
+<body>
+	
+	<center>
+
+	<div class="row col-lg-6 col-md-12 frame justify-content-center m-3">
+		
+		
+
+		<div class="col-8 row justify-content-center">
+			<!-- ------------------- select medicine type ----------------------- -->
+			<div class="mt-3 btn-group" role="group" aria-label="Basic radio toggle button group">
+				<input type="radio" class="btn-check" name="btnradio" id="btn_Insulin" autocomplete="off" checked>
+				<label id="btnInsulin" class="btn btn-outline-primary largeFont" for="btn_Insulin">Insulin</label>
+
+				<input type="radio" class="btn-check" name="btnradio" id="btn_Drops" autocomplete="off">
+				<label id="btnDrops" class="btn btn-outline-primary largeFont" for="btn_Drops">Drops</label>
+
+				<input type="radio" class="btn-check" name="btnradio" id="btn_Antibiotics" autocomplete="off">
+				<label id="btnAntibiotics" class="btn btn-outline-primary largeFont" for="btn_Antibiotics">Antibiotics</label>
+
+				<input type="radio" class="btn-check" name="btnradio" id="btn_Tablets" autocomplete="off">
+				<label id="btnTablets" class="btn btn-outline-primary largeFont" for="btn_Tablets">Tablets</label>
+			</div>
+			<!-- ------------------------------------------ -->
+			<!-- ---------------- search box-------------------------- -->
+			<div class="col-12 mt-3">
+				<input type="text" id="search-box" class="form-control largeFont" placeholder="Search...">
+			</div>
+			
+			<div class="row col-12 p-0" >
+			<div class="col-4 ">
+				<input id="txt_freq" type="text" class="form-control largeFont" placeholder="Freq">
+				</div>
+				<div class="col-4 ">
+				<input id="txt_days" type="text" class="form-control largeFont" placeholder="Days">
+				</div>
+				<div class="col-4 form-check form-switch" >
+					<input class="form-check-input" type="checkbox" id="isBupaOrNot">
+					<label class="form-check-label" for="flexSwitchCheckDefault">Bupa</label>
+				</div>
+			</div>
+
+			  <!-- ------------------- for drops ----------------------- -->
+			<div id="div_chooseEyes" class="col-6 mt-3 btn-group" role="group" aria-label="Basic radio toggle button group">
+				<input type="radio" class="btn-check" name="btn_radio" id="one_eye_ear" autocomplete="off" checked>
+				<label id="one_eyeear" class="btn btn-outline-primary" for="one_eye_ear">One Eye/Ear</label>
+
+				<input type="radio" class="btn-check" name="btn_radio" id="both_eyes_ears" autocomplete="off">
+				<label id="both_eyesears" class="btn btn-outline-primary" for="both_eyes_ears">Both Eyes/Ears</label>
+
+				
+			</div>
+			<!-- ------------------------------------------ -->
+
+			  
+		</div>
+		
+		<div class="row col-4">
+			<center>
+				
+
+			<!-- Medicine label -->
+			<div class="col-12">
+				<label id="label-box" class="form-control border-0 "></label>
+				<img id="img_items" height="70">
+			</div>
+			<div class="row col-10 m-3 d-flex align-items-center">
+				<button id="btn_calculate" type="button" class="btn btn-primary largeFont">Calculate</button>
+				<label id="txt_dose" class="col-form-label largeFont"> 0.0 </label>
+		  	</div>
+			</center>
+		</div>
+	</div>
+
+	<!-- search list-->
+	<!-- --------------------------------------------------------- -->
+	<div class="col-lg-6 col-md-12 frame justify-content-center">
+		<div class="row justify-content-center">
+			<div class="col-12" >
+				<h5>Search Results</h5>
+				<ul id="search-results" class="list-group" ></ul>
+			</div>
+			
+		</div>
+	</div>
+	<!-- --------------------------------------------------------- -->
+
+	</center>
+    
+  </body>
+</html>
+
+<script>
+
+  $(document).ready(function(){
+
+	$('#btn_calculate').click(function(){
+		startCalculate();
+	})
+
+	function calculateDose(){
+		if(checkBox===false){console.log('not valid');return;}
+		console.log('valid');
+
+	}
+
+	
+	function startCalculate() {
+		
+		var _rms=itemObj.RMS;
+		var _freq=$('#txt_freq').val();
+		var _days=$('#txt_days').val();
+		var _isbupa="false";
+		
+
+		var radioBtnEyes = $('#btn_Drops');
+		var radioBtnBothEyes = $('#both_eyes_ears');
+		// Check if the radio button is checked
+		if (radioBtnEyes.prop('checked')) {
+			if (radioBtnBothEyes.prop('checked')) {
+				_freq=_freq * 2;
+				//console.log(_freq);
+			}
+		}
+
+		//check bupa or not
+		var radiobupa = $('#isBupaOrNot');
+		if (radiobupa.prop('checked')) {
+			_isbupa='true';
+				//console.log(_freq);
+		}else{_isbupa='false';}
+
+		const _GetValue=_rms+","+_freq+","+_days+","+_isbupa
+		console.log(_GetValue);
+
+		$.ajax({
+			url: 'https://telescope-web.com/insu/calcDose/' +_GetValue ,
+			dataType: 'text',
+			cache: false,
+			success: function (data, statue) {
+				//console.log(data);
+				$('#txt_dose').text(data);
+			},
+			error: function () {
+				console.log('Failed');
+			}
+		});
+	}
+
+  });
+</script>
+
+
