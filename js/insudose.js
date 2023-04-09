@@ -154,7 +154,7 @@ $(document).ready(function() {
     function readcsvv() {
 	  $.ajax({
 		type: "GET",
-		url: "/db/_DbwithImage.csv",
+		url: "https://telescope-web.com/insuranceDB/_DbwithImage.csv",
 		dataType: "text",
 		success: function(data) {
 			//console.log(data);
